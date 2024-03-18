@@ -281,7 +281,7 @@
                     </div>
                     <div class="py-3 px-4 space-y-3">
                         <div class="flex space-x-4 lg:font-bold">
-                            <a href="/like/?id={{ post.id }}" class="flex items-center space-x-2">
+                            <a href="/like/?id={{ post.id }}&p={{ request.GET.p }}" class="flex items-center space-x-2">
                                 <div class="p-2 rounded-full text-black">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                          width="25" height="25" class="">
@@ -385,7 +385,7 @@
                                 </div>
                             </div>
 
-                            <a href="/follow/?f_id={{ user.id }}"
+                            <a href="/follow/?f_id={{ user.id }}&p={{ request.GET.p }}"
                                class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 ">
                                 Follow </a>
                         </div>

@@ -126,6 +126,9 @@ def profile_view(request):
 
 def follow(request):
     _next = request.GET.get('next', '/')
+    page = request.GET.get('p')
+    if page == '':
+        page = '1'
     follower = MyUser.objects.filter(user=request.user)
     following = MyUser.objects.filter(id=request.GET.get('f_id'))
     obj = FollowUser.objects.filter(follower=follower.first(), following=following.first())
@@ -138,10 +141,13 @@ def follow(request):
         following.update(followers=F('followers') + 1)
         data = FollowUser.objects.create(follower=follower.first(), following=following.first())
         data.save()
-    return redirect(_next)
+    return redirect(_next + '?' + page)
 
 
 def like(request):
+    page = request.GET.get('p')
+    if page == '':
+        page = '1'
     author = MyUser.objects.filter(user=request.user).first()
     post = Post.objects.filter(id=request.GET.get('id'))
     obj = LikePost.objects.filter(author=author, post=post.first())
@@ -152,7 +158,7 @@ def like(request):
         post.update(like_count=F('like_count') + 1)
         data = LikePost.objects.create(author=author, post_id=request.GET.get('id'))
         data.save()
-    return redirect(f'/#{post.first().id}')
+    return redirect(f'/?p={page}#{post.first().id}')
 
 
 class CPaginator:
