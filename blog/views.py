@@ -15,7 +15,7 @@ def home_view(request):
     user = MyUser.objects.filter(user_id=request.user.id).first()
 
     followers = FollowUser.objects.filter(follower=user)
-    followers_pk = [0]
+    followers_pk = []
     for follower in followers:
         followers_pk.append(follower.following.id)
     follow_users = MyUser.objects.exclude(Q(id=user.id) | Q(id__in=followers_pk))[:4]
@@ -28,11 +28,10 @@ def home_view(request):
         posts = CPaginator(Post, 2, page, query)
     else:
         query = f"SELECT * FROM blog_post WHERE is_published=true and author_id in {tuple(followers_pk)} ORDER BY created_at DESC"
+        if len(followers_pk) == 1:
+            query = f"SELECT * FROM blog_post WHERE is_published=true and author_id={followers_pk[0]} ORDER BY created_at DESC"
         posts = CPaginator(Post, 2, page, query)
-        print('=' * 50)
-        print(query)
-        print('=' * 50)
-
+        
     if request.method == "POST":
         data = request.POST
         if request.FILES:
