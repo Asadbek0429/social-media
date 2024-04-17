@@ -15,7 +15,7 @@ def home_view(request):
     user = MyUser.objects.filter(user_id=request.user.id).first()
 
     followers = FollowUser.objects.filter(follower=user)
-    followers_pk = []
+    followers_pk = [0]
     for follower in followers:
         followers_pk.append(follower.following.id)
     follow_users = MyUser.objects.exclude(Q(id=user.id) | Q(id__in=followers_pk))[:4]
@@ -29,6 +29,9 @@ def home_view(request):
     else:
         query = f"SELECT * FROM blog_post WHERE is_published=true and author_id in {tuple(followers_pk)} ORDER BY created_at DESC"
         posts = CPaginator(Post, 2, page, query)
+        print('=' * 50)
+        print(query)
+        print('=' * 50)
 
     if request.method == "POST":
         data = request.POST
@@ -127,8 +130,6 @@ def profile_view(request):
 def follow(request):
     _next = request.GET.get('next', '/')
     page = request.GET.get('p')
-    if page == '':
-        page = '1'
     follower = MyUser.objects.filter(user=request.user)
     following = MyUser.objects.filter(id=request.GET.get('f_id'))
     obj = FollowUser.objects.filter(follower=follower.first(), following=following.first())
@@ -141,13 +142,13 @@ def follow(request):
         following.update(followers=F('followers') + 1)
         data = FollowUser.objects.create(follower=follower.first(), following=following.first())
         data.save()
-    return redirect(_next + '?' + page)
+    if page:
+        return redirect(f"{_next}?p={page}")
+    return redirect(_next)
 
 
 def like(request):
     page = request.GET.get('p')
-    if page == '':
-        page = '1'
     author = MyUser.objects.filter(user=request.user).first()
     post = Post.objects.filter(id=request.GET.get('id'))
     obj = LikePost.objects.filter(author=author, post=post.first())
@@ -158,7 +159,9 @@ def like(request):
         post.update(like_count=F('like_count') + 1)
         data = LikePost.objects.create(author=author, post_id=request.GET.get('id'))
         data.save()
-    return redirect(f'/?p={page}#{post.first().id}')
+    if page:
+        return redirect(f'/?p={page}#{post.first().id}')
+    return redirect(f'/#{post.first().id}')
 
 
 class CPaginator:
