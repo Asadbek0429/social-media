@@ -36,7 +36,7 @@ jobs:
           HOST: ${{ secrets.HOST }}
         run: |
           echo "${SSH_PRIVATE_KEY}" > ssh_key
-          chmod 600 ssh_key
+          chmod 600 ssh_key 
 
           mkdir -p ~/.ssh
           cp ssh_key ~/.ssh/id_rsa
