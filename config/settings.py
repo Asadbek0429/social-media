@@ -119,10 +119,20 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = 'media'
+AWS_ACCESS_KEY_ID = 'DO00X7KW2E8Q4EQGGRCW'
+AWS_SECRET_ACCESS_KEY = 'iRMinMjTiKzcY7ThShPihKgpcR9dSp6rIcBFyK+0evA'
+AWS_STORAGE_BUCKET_NAME = 'asadbek-social-media'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+AWS_S3_ENDPOINT_URL = 'https://quloq.fra1.digitaloceanspaces.com'
+AWS_S3_CUSTOM_DOMAIN = 'quloq.fra1.digitaloceanspaces.com/' + AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+    'ACL': 'public-read'
+}
+
+DEFAULT_FILE_STORAGE = 'config.storage_backend.MediaStorage'
+
+MEDIA_ROOT = 'media'
+MEDIA_URL = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
